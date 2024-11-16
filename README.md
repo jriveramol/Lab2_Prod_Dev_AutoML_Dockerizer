@@ -4,7 +4,10 @@ Repositorio dedicado a la creación de pipeline de autoML con Docker con dos mé
 2. API
 
 ## Construcción de Imagen
-´´´
+```
+# Moverse a ruta donde se descargó el Dockerfile
 cd "/mnt/c/path"
+
+# Construir la imagen con el siguiente comando (el nombre automl-dockerizer y el tag latest puede cambiar)
 docker build -t automl-dockerizer:latest .
-´´´
+```
