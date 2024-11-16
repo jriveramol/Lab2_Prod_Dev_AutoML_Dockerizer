@@ -62,3 +62,10 @@ Contiene los parámetros de ejecución en modo **API**.
  PORT=8000                                   # Puerto en el que se hará el despliegue de la API tanto local como en el contenedor de Docker
  MODEL_FOLDER=/data/modelos_entrenados       # Carpeta a la que se exportan los modelos entrenados
 ```
+
+##### test_api.ipynb
+Archivo que permite realizar pruebas de solicitudes a la API.
+
+##### data_test.parquet
+Archivo con muestras de dataset para enviar a la API o para colocar en la carpeta *INPUT_FOLDER* para obtener predicciones.
+Para enviarlas a la API ejecute las celdas del cuaderno *test_api.ipynb*.
