@@ -16,6 +16,8 @@ def load_env():
     trials = int(os.getenv("TRIALS"))
     input_folder = os.getenv("INPUT_FOLDER")    
     output_folder = os.getenv("OUTPUT_FOLDER")
+    processed_entry = os.getenv("PROCESSED_ENTRY")
+    model_folder = os.getenv("MODEL_FOLDER")
 
     # Mostrar las variables
     logging.info('PARAMETROS DE EJECUCION:')
@@ -25,14 +27,16 @@ def load_env():
     logging.info(f'TRIALS: {trials}')
     logging.info(f'INPUT_FOLDER: {input_folder}')
     logging.info(f'OUTPUT_FOLDER: {output_folder}')
+    logging.info(f'PROCESSED_ENTRY: {processed_entry}')
+    logging.info(f'MODEL_FOLDER: {model_folder}')
 
     logging.info(100*'-')
-    return input_file, target, modelo, trials, input_folder, output_folder
+    return input_file, target, modelo, trials, input_folder, output_folder, processed_entry, model_folder
 
-def load_model(modelo):
+def load_model(modelo, model_folder):
     # Carga de modelo
     logging.info("Cargando modelo")
-    model = joblib.load(f'{modelo}.pkl')
+    model = joblib.load(f'{model_folder}/{modelo}.pkl')
     return model
 
 def load_preprocessor():
@@ -41,12 +45,9 @@ def load_preprocessor():
     preprocessor = joblib.load('preprocessor.pkl')
     return preprocessor
     
-def batch_prediction():
-    # Lectura de variables
-    input_file, target, modelo, trials, input_folder, output_folder = load_env()
-
+def batch_prediction(input_file, target, modelo, trials, input_folder, output_folder, processed_entry, model_folder):
     # Entrenamiento
-    train_model(input_file, modelo, target, trials)
+    train_model(input_file, modelo, target, trials, model_folder)
 
     logging.info(f'ESPERANDO POR DATA EN {input_folder} PARA REALIZAR PREDICCIONES')
     while True:
@@ -54,15 +55,15 @@ def batch_prediction():
         if len(files) > 0:
             for file in files:
                 logging.info(f'Procesando {file}')
-                path_actual = os.path.join(input_folder,file)
-                path_destino = os.path.join(os.getcwd(), 'entradas_procesadas', file)
+                path_actual = os.path.join(input_folder, file)
+                path_destino = os.path.join(processed_entry, file)
                 # Cargar datos de entrada
                 logging.info("Cargando datos de entrada")
                 data = pd.read_parquet(input_file)
 
                 # Carga de preprocesador y modelo
                 preprocessor = load_preprocessor()
-                model = load_model(modelo)
+                model = load_model(modelo, model_folder)
 
                 # Aplicar preprocesador
                 X = preprocessor.transform(data)
@@ -82,6 +83,6 @@ def batch_prediction():
     
     logging.info('Proceso finalizado')
 
-# if __name__ == '__main__':
-#     input_file, target, modelo, trials, input_folder, output_folder = load_env()
-#     batch_prediction(input_file, target, modelo, trials, input_folder, output_folder)
+if __name__ == '__main__':
+    input_file, target, modelo, trials, input_folder, output_folder, processed_entry, model_folder = load_env()
+    batch_prediction(input_file, target, modelo, trials, input_folder, output_folder, processed_entry, model_folder)

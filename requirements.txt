@@ -6,3 +6,5 @@ scipy==1.14.1
 optuna==4.0.0
 python-dotenv==1.0.1
 pyarrow
+fastapi==0.115.5
+uvicorn[standard]==0.22.0

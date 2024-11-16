@@ -32,7 +32,7 @@ def optimizacion_modelo(trial, nombre_modelo, clase_modelo, params, X_train, y_t
     
     return log_loss(y_test, y_pred_proba)
 
-def train_model(input_file, modelo, target, trials):
+def train_model(input_file, modelo, target, trials, model_folder):
     '''Entrenamiento y optimización de modelos'''
     X_train, y_train, X_test, y_test, X_val, y_val = clean_data(input_file, target)
     if modelo == 'NaiveBayes':
@@ -95,7 +95,7 @@ def train_model(input_file, modelo, target, trials):
 
     # Precisión
     accuracy = accuracy_score(y_val, y_pred)
-    logging.info(f'Precisión: {accuracy:.4f}')
+    logging.info(f'Precision: {accuracy:.4f}')
 
     # F1-Score (macro o weighted)
     f1 = f1_score(y_val, y_pred, average='weighted') 
@@ -103,10 +103,11 @@ def train_model(input_file, modelo, target, trials):
 
     # Matriz de confusión
     conf_matrix = confusion_matrix(y_val, y_pred)
-    logging.info(f'Matriz de Confusión:\n {conf_matrix}')
+    logging.info(f'Matriz de Confusion:\n {conf_matrix}')
 
-    model_name = f'{modelo}.pkl'
+    model_name = f'{model_folder}/{modelo}.pkl'
     joblib.dump(best_model, model_name)
+    logging.info(f'Modelo {modelo} exportado en {model_folder}')
     
     logging.info(f'Parametros optimizados: {best_params}')
     logging.info(100*'-')
